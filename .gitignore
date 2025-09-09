@@ -1,0 +1,19 @@
+# MATLAB temp/build
+*.asv
+*.m~*
+*.autosave
+*.slxc
+*.mex*
+*.p
+slprj/
+sccprj/
+codegen/
+.matlab/
+
+# Outputs
+matlab/results/
+matlab/figs/
+
+# OS
+.DS_Store
+Thumbs.db
