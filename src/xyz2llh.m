@@ -29,15 +29,17 @@ function llh = xyz2llh(xyz)
 	y2 = y^2;
 	z2 = z^2;
 
-	a = 6378137.0000;	% earth radius in meters
-	b = 6356752.3142;	% earth semiminor in meters	
-	e = sqrt (1-(b/a).^2);
+	a = 6378137.0000;	    % earth radius in meters
+	b = 6356752.3142;       % earth semiminor in meters	
+	e = sqrt (1-(b/a).^2);  % first eccentricity (1차 이심률) -> 지구가 얼마나 납작한지 나타내는 척도
 	b2 = b*b;
 	e2 = e^2;
-	ep = e*(a/b);
-	r = sqrt(x2+y2);
+	ep = e*(a/b);       % second eccentricity (보조 이심률) -> 위도 계산식에서 z축 성분 보정용
+	r = sqrt(x2+y2);    % equatorial radius component (적도면 반경 성분) -> 적도면에서 지구 자전축까지의 거리
 	r2 = r*r;
 	E2 = a^2 - b^2;
+
+    % 폐형식 변환 공식의 중간 계산 (Kaplan, 1996)
 	F = 54*b2*z2;
 	G = r2 + (1-e2)*z2 - e2*E2;
 	c = (e2*e2*F*r2)/(G*G*G);
@@ -46,15 +48,17 @@ function llh = xyz2llh(xyz)
 	Q = sqrt(1+2*e2*e2*P);
 	ro = -(P*e2*r)/(1+Q) + sqrt((a*a/2)*(1+1/Q) ...
                                 - (P*(1-e2)*z2)/(Q*(1+Q)) - P*r2/2);
+
 	tmp = (r - e2*ro)^2;
-	U = sqrt( tmp + z2 );
-	V = sqrt( tmp + (1-e2)*z2 );
-	zo = (b2*z)/(a*V);
+	U = sqrt( tmp + z2 );           % distance from Earth center (지구 중심 거리)
+	V = sqrt( tmp + (1-e2)*z2 );    % adjusted distance (이심률 보정 거리)
+	zo = (b2*z)/(a*V);              % corrected z-component (보정된 z성분) -> 위도 계산식에 사용
 
-	height = U*( 1 - b2/(a*V) );
+	height = U*( 1 - b2/(a*V) );    % height above ellipsoid (Geodetric or Ellipsoidal Height)
 	
-	lat = atan( (z + ep*ep*zo)/r );
+	lat = atan( (z + ep*ep*zo)/r ); % geodetic latitude
 
+    % longitude
 	temp = atan(y/x);
 	if x >=0	
 		long = temp;
