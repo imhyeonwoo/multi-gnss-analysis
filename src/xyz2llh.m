@@ -54,9 +54,11 @@ function llh = xyz2llh(xyz)
 	V = sqrt( tmp + (1-e2)*z2 );    % adjusted distance (이심률 보정 거리)
 	zo = (b2*z)/(a*V);              % corrected z-component (보정된 z성분) -> 위도 계산식에 사용
 
-	height = U*( 1 - b2/(a*V) );    % height above ellipsoid (Geodetric or Ellipsoidal Height)
+    % height above ellipsoid (Geodetric or Ellipsoidal Height)
+	height = U*( 1 - b2/(a*V) );
 	
-	lat = atan( (z + ep*ep*zo)/r ); % geodetic latitude
+    % geodetic latitude
+	lat = atan( (z + ep*ep*zo)/r ); 
 
     % longitude
 	temp = atan(y/x);
