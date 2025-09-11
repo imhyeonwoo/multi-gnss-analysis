@@ -28,20 +28,34 @@ function enu = xyz2enu(xyz,orgxyz)
 %	Copyright (c) 1996 by GPSoft
 %	All Rights Reserved.
 
-if nargin<2,error('insufficient number of input arguments'),end
+% 입력 검증 및 차벡터 계산 (xyz와 orgxyz 모두 필요)
+if nargin<2, error('insufficient number of input arguments'), end
+
+% xyz와 orgxyz의 벡터 크기가 다르면 orgxyz를 전치(transpose)하여 맞춤
 tmpxyz = xyz;
 tmporg = orgxyz;
-if size(tmpxyz) ~= size(tmporg), tmporg=tmporg'; end,
+if size(tmpxyz) ~= size(tmporg), tmporg = tmporg'; end
+
+% 변환할 점과 기준점 간의 차벡터 (ECEF 기준 상대 위치)
 difxyz = tmpxyz - tmporg;
-[m,n] = size(difxyz); if m<n, difxyz=difxyz'; end,
+
+% 차벡터가 행벡터면 열벡터로 변환
+[m,n] = size(difxyz); 
+if m<n, difxyz = difxyz'; end
+
+% 기준점의 ECEF 좌표를 위도(latitude), 경도(longitude), 고도(height)로 변환
 orgllh = xyz2llh(orgxyz);
-phi = orgllh(1);
-lam = orgllh(2);
-sinphi = sin(phi);
-cosphi = cos(phi);
-sinlam = sin(lam);
-coslam = cos(lam);
+
+phi = orgllh(1);   % 기준점 위도 (latitude)
+lam = orgllh(2);   % 기준점 경도 (longitude)
+
+sinphi = sin(phi); cosphi = cos(phi);
+sinlam = sin(lam); coslam = cos(lam);
+
+% ECEF → ENU 변환을 위한 회전 행렬 R 구성
 R = [ -sinlam          coslam         0     ; ...
       -sinphi*coslam  -sinphi*sinlam  cosphi; ...
        cosphi*coslam   cosphi*sinlam  sinphi];
-enu = R*difxyz;
+
+% 회전행렬 R을 곱해 ENU(동,북,천) 좌표로 변환
+enu = R * difxyz;
