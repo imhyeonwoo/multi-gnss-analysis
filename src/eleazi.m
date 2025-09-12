@@ -29,7 +29,7 @@ R2D=180/pi;
 %    -U(1)*cos(L(1))*cos(L(2))-U(2)*cos(L(1))*sin(L(2))-U(3)*sin(L(1));
 %LSV = [LSX LSY LSZ];
 
-LLH = xyz2llh(U);         % WGS-84 coordinate (deg,deg,m)
+LLH = xyz2llh(U);         % WGS-84 coordinate (rad,rad,m)
 
 R= rot2(LLH(1,1),LLH(1,2));
 rho_xyz= SAT-U(1:3);
